@@ -1,0 +1,65 @@
+﻿<div cg-busy="vm.promise">
+    <article class="container">
+        <form class="rowfiltro campoLabel">
+            <div>
+                <label>Nome do #pagenameptbr#</label>
+                <div class="group">
+                    <div class="form-search">
+                        <input type="text" class="form-control" placeholder="Digite o nome do #pagenameptbr#" ng-model="vm.#pagenamelowercase#Name" maxlength="200" ng-change="vm.updateFilteredList()" ng-model-options="{debounce: 250}">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </article>
+
+    <!-- Results -->
+    <article class="container container-principal">
+        <div class="card-geral">
+            <div ng-if="auth.group.visionId === 1">
+                <a ng-href="#new" class="btn btn-primary pull-right" title="Novo #pagenameptbr#">Novo #pagenameptbr#</a>
+            </div>
+            <div class="container-table" ng-if="vm.#pagenamelowercase#sFiltered.length > 0">
+                <table class="table" at-table at-paginated at-list="vm.#pagenamelowercase#sFiltered" at-config="vm.config">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Tipo de recurso</th>
+                            <th class="col-acao text-center">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td at-implicit at-sortable at-attribute="name" at-initial-sorting="asc" at-title="Nome" at-id="name" attribute-order="name"></td>
+
+                            <td at-implicit at-sortable at-attribute="resourceType.name" at-title="Tipo de recurso" at-id="resourceType.name" attribute-order="resourceType.name"></td>
+
+                            <td class="text-center">
+                                <a class="btn-acao" href="#view/{{ ::item.id }}" title="Visualizar">
+                                    <i class="material-icons">remove_red_eye</i>
+                                </a>
+                                <a class="btn-acao" href="#edit/{{ ::item.id }}" title="Editar" ng-if="auth.group.visionId === 1">
+                                    <i class="material-icons">mode_edit</i>
+                                </a>
+                                <a class="btn-acao" href="" data-toggle="modal" data-target="#confirmDelete" ng-click="vm.confirmDelete(item)" title="Excluir" ng-if="auth.group.visionId === 1">
+                                    <i class="material-icons">delete</i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <at-pagination at-list="vm.#pagenamelowercase#sFiltered" at-config="vm.config"></at-pagination>
+            </div>
+
+            <div ng-if="vm.#pagenamelowercase#sFiltered.length == 0">
+                <div class="campoLabel">
+                    <h4 class="no-margin">Nenhum #pagenameptbr# encontrado.</h4>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <!--Modal Delete-->
+    <modal modalid="confirmDelete" modaltitle="Confirmação de exclusão" confirmtext="Excluir" closetext="Cancelar" confirm="vm.remove()" class="ng-cloak">
+        Deseja excluir o #pagenameptbr# "{{ vm.#pagenamelowercase#.name }}"?
+    </modal>
+</div>

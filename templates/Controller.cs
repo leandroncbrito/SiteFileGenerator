@@ -61,7 +61,7 @@ namespace #namespace#.Controllers
             {
                 log.Error(ex);
                 Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                return Json("Erro ao salvar #pagename#.", JsonRequestBehavior.AllowGet);
+                return Json("Erro ao salvar #pagenameptbr#.", JsonRequestBehavior.AllowGet);
             }
         }
 

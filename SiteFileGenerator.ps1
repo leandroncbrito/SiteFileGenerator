@@ -1,3 +1,4 @@
+# Parametros de entrada #
 param (
 	[Parameter(Mandatory=$True)]
 	[string]$namespace,
@@ -17,42 +18,35 @@ if (-not($pagename) -or(-not($pagenameptbr)) -or(-not($namespace))) {
 # Nome em minúsculo #
 $pagenamelowercase = $pagename.ToLower();
 
-# Função para criar diretórios #
-function CreateDirectory
-{	
-	param([string]$directory)
-	If(!(Test-Path $directory)) {	
-		New-Item -ItemType Directory -Force -Path $directory 
-	}
-}
-
-# Função para substituir conteúdo #
-function ReplaceContent
-{
-	param([string]$content)	
-	$content -replace '#namespace#', $namespace	`
-			-replace '#pagename#', $pagename `
-			-replace '#pagenamelowercase#', $pagenamelowercase `
-			-replace '#pagenameptbr#', $pagenameptbr;
-}
-
-
-### Caminho dos arquivos de destino ###
+### Caminho dos arquivos ###
 $rootpath = ".\output";
 
-# front-end #
+# Diretório Front-End #
 $target = "$rootpath\wwwroot\app";
 $targetroute = "$target\routes\$pagenamelowercase";
 $targetcontroller = "$target\controllers\$pagenamelowercase";
 $targetmodel = "$target\models\$pagenamelowercase";
 $targethtml = "$target\templates\$pagenamelowercase";
 
-# back-end #
+# Diretórios Back-End #
 $targetcontrollerback = "$rootpath\$namespace\Controllers";
 $targetbusinessback = "$rootpath\$namespace.Business";
 $targetibusinessback = "$rootpath\$namespace.IBusiness";
 $targetrepositoryback = "$rootpath\$namespace.Repository.EntityFramework";
 $targetirepositoryback = "$rootpath\$namespace.IRepository";
+
+# Array de diretórios de destinos #
+$targets = @(
+	$targetroute,
+	$targetcontroller,
+	$targetmodel,
+	$targethtml,
+	$targetcontrollerback,
+	$targetbusinessback,
+	$targetibusinessback,
+	$targetrepositoryback,
+	$targetirepositoryback
+);
 
 ### Conteúdo dos arquivos de template ###
 # front-end #
@@ -68,24 +62,46 @@ $ibusinessbackcontent = Get-Content -Path ".\templates\IBusiness.cs" -Raw;
 $repositorybackcontent = Get-Content -Path ".\templates\Repository.cs" -Raw;
 $irepositorybackcontent = Get-Content -Path ".\templates\IRepository.cs" -Raw;
 
-# Apaga pasta Output #
-If (Test-Path $rootpath) {	
-	Remove-Item -Recurse -Force $rootpath;
+# Função para criar diretórios #
+function CreateDirectory
+{	
+	param([string]$directory)
+	If(!(Test-Path $directory)) {	
+		New-Item -ItemType Directory -Force -Path $directory 
+	}
 }
 
-### Cria diretórios ###
-# front-end #
-CreateDirectory -directory $targetroute;
-CreateDirectory -directory $targetcontroller;
-CreateDirectory -directory $targetmodel;
-CreateDirectory -directory $targethtml;
+# Função para criar a estrutura de diretórios #
+function CreateDirectoryStructure
+{	
+	foreach ($element in $targets){
+		CreateDirectory -directory $element;
+	}	
+}
 
-# back-end #
-CreateDirectory -directory $targetcontrollerback;
-CreateDirectory -directory $targetbusinessback;
-CreateDirectory -directory $targetibusinessback;
-CreateDirectory -directory $targetrepositoryback;
-CreateDirectory -directory $targetirepositoryback;
+# Função para substituir conteúdo #
+function ReplaceContent
+{
+	param([string]$content)	
+	$content -replace '#namespace#', $namespace	`
+			 -replace '#pagename#', $pagename `
+			 -replace '#pagenamelowercase#', $pagenamelowercase `
+			 -replace '#pagenameptbr#', $pagenameptbr;
+}
+
+# Apaga pasta Output #
+function DeleteOutputDirectory
+{
+	If (Test-Path $rootpath) {	
+		Remove-Item -Recurse -Force $rootpath;
+	}
+}
+
+### Apagar diretório de saída ###
+DeleteOutputDirectory
+
+### Cria diretórios ###
+CreateDirectoryStructure
 
 ### Troca o conteúdo parametrizado ###
 # front-end #
@@ -97,6 +113,6 @@ ReplaceContent -content $htmlcontent | Set-Content "$targethtml\list.html";
 # back-end #
 ReplaceContent -content $controllerbackcontent | Set-Content ("$targetcontrollerback\$pagename"+"Controller.cs");
 ReplaceContent -content $businessbackcontent | Set-Content ("$targetbusinessback\$pagename"+"Business.cs");
-ReplaceContent -content $ibusinessbackcontent | Set-Content ("$targetibusinessback\$pagename"+"IBusiness.cs");
+ReplaceContent -content $ibusinessbackcontent | Set-Content ("$targetibusinessback\I$pagename"+"Business.cs");
 ReplaceContent -content $repositorybackcontent | Set-Content ("$targetrepositoryback\$pagename"+"Repository.cs");
 ReplaceContent -content $irepositorybackcontent | Set-Content ("$targetirepositoryback\I$pagename"+"Repository.cs");

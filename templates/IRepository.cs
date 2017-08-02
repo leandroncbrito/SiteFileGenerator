@@ -9,8 +9,8 @@ namespace #namespace#.IRepository
 
     public interface ICommand#pagename#
     {
-        void Save(#pagename# #pagenamelowercase#);
-        void Update(#pagename# #pagenamelowercase#);
+        void Save(#pagename# #pagename#);
+        void Update(#pagename# #pagename#);
     }
 
     public interface I#pagename#Repository : IQuery#pagename#, ICommand#pagename#

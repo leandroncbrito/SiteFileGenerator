@@ -7,7 +7,7 @@ namespace #namespace#.IRepository
         #pagename# Get(long id);        
     }
 
-    public interface ICommandProgram
+    public interface ICommand#pagename#
     {
         void Save(#pagename# #pagenamelowercase#);
         void Update(#pagename# #pagenamelowercase#);

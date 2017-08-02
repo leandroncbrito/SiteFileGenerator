@@ -11,8 +11,8 @@ namespace #namespace#.Business
 
         public #pagename#Business(I#pagename#Repository #pagenamelowercase#Repository, IValidator<#pagename#> validator)
         {
-            Queries = programRepository;
-            Command = programRepository;
+            Queries = #pagenamelowercase#Repository;
+            Command = #pagenamelowercase#Repository;
             this.validator = validator;
         }
 
@@ -49,7 +49,7 @@ namespace #namespace#.Business
 
                 #pagenamelowercase#.State = (byte)State.Deleted;
                 
-                Command.Update(program);
+                Command.Update(#pagenamelowercase#);
                 
             }
         }
